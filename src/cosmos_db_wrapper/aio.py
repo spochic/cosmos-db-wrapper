@@ -19,7 +19,7 @@ async def get_or_create_db(client: CosmosClient, database_name: str) -> Database
     except exceptions.CosmosResourceExistsError:
         logging.debug(
             F"get_or_create_db()-Database '{database_name}' already exists")
-        database_proxy = await client.get_database_client(database=database_name)
+        database_proxy = client.get_database_client(database=database_name)
 
     finally:
         logging.debug(
@@ -41,7 +41,7 @@ async def get_or_create_container(database_proxy: DatabaseProxy, container_name:
     except exceptions.CosmosResourceExistsError:
         logging.debug(
             F"get_or_create_container()-Container '{container_name}' already exists")
-        container_proxy = await database_proxy.get_container_client(container_name)
+        container_proxy = database_proxy.get_container_client(container_name)
 
     finally:
         logging.debug(
