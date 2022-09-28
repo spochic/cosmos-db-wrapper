@@ -50,11 +50,37 @@ async def get_or_create_container(database_proxy: DatabaseProxy, container_name:
 
 
 async def query_items(container_proxy: ContainerProxy, query_text: str):
+    logging.debug(F"query_items()-query_text =  {query_text}")
     query_items_response = container_proxy.query_items(
         query=query_text,
         enable_cross_partition_query=True)
 
     items = [item async for item in query_items_response]
-    logging.debug(F"async.query_items()-type(items) =  {type(items)}")
+    logging.debug(F"query_items()-type(items) =  {type(items)}")
+    logging.debug(F"query_items()-items =  {items}")
 
     return items
+
+
+async def get_item_by_id(container_proxy: ContainerProxy, item_id: str):
+    logging.debug(F"get_item_by_id()-item_id = {item_id}")
+    items = await query_items(
+        container_proxy,
+        F"SELECT * FROM c WHERE c.id = '{item_id}'")
+    logging.debug(F"get_item_by_id()-items = {items}")
+    logging.debug(F"get_item_by_id()-len(items) = {len(items)}")
+    assert len(items) <= 1
+
+    if len(items) == 0:
+        return None
+    else:
+        return items[0]
+
+
+async def create_item(container_proxy: ContainerProxy, item: str):
+    item['last_update'] = datetime.utcnow().isoformat()
+    logging.debug(F"create_item()-item = {item}")
+    upserted_item = await container_proxy.upsert_item(body=item)
+    logging.debug(F"create_item()-inserted item = {upserted_item}")
+
+    return upserted_item
