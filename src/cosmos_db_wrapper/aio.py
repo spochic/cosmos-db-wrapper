@@ -62,6 +62,19 @@ async def query_items(container_proxy: ContainerProxy, query_text: str):
     return items
 
 
+async def get_all_items(container_proxy: ContainerProxy):
+    logging.debug(F"get_all_items()")
+    items = await query_items(
+        container_proxy,
+        F"SELECT * FROM c")
+    logging.debug(F"get_all_items()-len(items) = {len(items)}")
+
+    if len(items) == 0:
+        return None
+    else:
+        return items
+
+
 async def get_item_by_id(container_proxy: ContainerProxy, item_id: str):
     logging.debug(F"get_item_by_id()-item_id = {item_id}")
     items = await query_items(
