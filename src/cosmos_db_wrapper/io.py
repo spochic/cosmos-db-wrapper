@@ -60,25 +60,40 @@ def query_items(container_proxy: ContainerProxy, query_text: str):
 
 
 def read_all_items(container_proxy: ContainerProxy):
-    logging.debug(F"read_all_items()")
-    items = container_proxy.read_all_items()
-    logging.debug(F"read_all_items()-len(items) = {len(items)}")
+    try:
+        logging.debug(F"read_all_items()")
+        items = container_proxy.read_all_items()
+        logging.debug(F"read_all_items()-len(items) = {len(items)}")
+        return list(items)
 
-    return items
+    except exceptions.CosmosResourceNotFoundError:
+        return []
 
 
-def get_item_by_id(container_proxy: ContainerProxy, item_id: str):
-    logging.debug(F"get_item_by_id()-item_id = {item_id}")
+def read_item(container_proxy: ContainerProxy, item_id: str, partition_key: str):
+    try:
+        logging.debug(F"read_item()-item_id = {item_id}")
+        item = container_proxy.read_item(item_id, partition_key)
+        logging.debug(F"read_item()-item = {item}")
+        return item
+
+    except exceptions.CosmosResourceNotFoundError:
+        return {}
+
+
+def get_item_by_uri(container_proxy: ContainerProxy, uri: str):
+    logging.debug(F"get_item_by_uri()-uri = {uri}")
     items = query_items(
         container_proxy,
-        F"SELECT * FROM c WHERE c.id = '{item_id}'")
-    logging.debug(F"get_item_by_id()-items = {items}")
-    logging.debug(F"get_item_by_id()-len(items) = {len(items)}")
+        F"SELECT * FROM c WHERE c.uri = '{uri}'")
+    logging.debug(F"get_item_by_uri()-items = {items}")
+    logging.debug(F"get_item_by_uri()-len(items) = {len(items)}")
     assert len(items) <= 1
 
     if len(items) == 0:
-        return None
+        return {}
     else:
+        logging.debug(F"get_item_by_uri()-type(items[0]) =  {type(items[0])}")
         return items[0]
 
 
