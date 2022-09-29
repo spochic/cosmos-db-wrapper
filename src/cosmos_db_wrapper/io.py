@@ -62,9 +62,9 @@ def query_items(container_proxy: ContainerProxy, query_text: str):
 def read_all_items(container_proxy: ContainerProxy):
     try:
         logging.debug(F"read_all_items()")
-        items = container_proxy.read_all_items()
+        items = list(container_proxy.read_all_items())
         logging.debug(F"read_all_items()-len(items) = {len(items)}")
-        return list(items)
+        return items
 
     except exceptions.CosmosResourceNotFoundError:
         return []
@@ -83,9 +83,9 @@ def read_item(container_proxy: ContainerProxy, item_id: str, partition_key: str)
 
 def get_item_by_uri(container_proxy: ContainerProxy, uri: str):
     logging.debug(F"get_item_by_uri()-uri = {uri}")
-    items = query_items(
+    items = list(query_items(
         container_proxy,
-        F"SELECT * FROM c WHERE c.uri = '{uri}'")
+        F"SELECT * FROM c WHERE c.uri = '{uri}'"))
     logging.debug(F"get_item_by_uri()-items = {items}")
     logging.debug(F"get_item_by_uri()-len(items) = {len(items)}")
     assert len(items) <= 1
