@@ -98,9 +98,8 @@ def get_item_by_uri(container_proxy: ContainerProxy, uri: str):
 
 
 def create_item(container_proxy: ContainerProxy, item: str):
-    item['last_update'] = datetime.utcnow().isoformat()
     logging.debug(F"create_item()-item = {item}")
     upserted_item = container_proxy.upsert_item(body=item)
-    logging.debug(F"create_item()-inserted item = {upserted_item}")
+    logging.debug(F"create_item()-upserted item = {upserted_item}")
 
     return upserted_item
