@@ -49,9 +49,9 @@ def get_or_create_container(database_proxy: DatabaseProxy, container_name: str, 
 
 def query_items(container_proxy: ContainerProxy, query_text: str):
     logging.debug(F"query_items()-query_text =  {query_text}")
-    query_items_response = container_proxy.query_items(
+    query_items_response = list(container_proxy.query_items(
         query=query_text,
-        enable_cross_partition_query=True)
+        enable_cross_partition_query=True))
 
     logging.debug(F"query_items()-type(items) =  {type(query_items_response)}")
     logging.debug(F"query_items()-items =  {query_items_response}")
