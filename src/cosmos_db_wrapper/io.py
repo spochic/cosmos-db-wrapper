@@ -97,9 +97,9 @@ def get_item_by_uri(container_proxy: ContainerProxy, uri: str):
         return items[0]
 
 
-def create_item(container_proxy: ContainerProxy, item: str):
-    logging.debug(F"create_item()-item = {item}")
+def upsert_item(container_proxy: ContainerProxy, item: str):
+    logging.debug(F"upsert_item()-item = {item}")
     upserted_item = container_proxy.upsert_item(body=item)
-    logging.debug(F"create_item()-upserted item = {upserted_item}")
+    logging.debug(F"upsert_item()-upserted item = {upserted_item}")
 
     return upserted_item
